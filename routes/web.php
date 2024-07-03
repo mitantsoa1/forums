@@ -16,3 +16,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::get('/', [DefaultController::class, 'index'])->name('index');
 Route::get('/questions/{post}', [PostController::class, 'show'])->name('posts.show');
+Route::get('/questions/topics/{topic}', [PostController::class, 'postByTopic'])->name('posts.showByTopic');
+
+// Route::get('posts/{id}', [PostController::class, 'show'])->name('post.show');
+Route::get('questions/{id}/comment', [PostController::class, 'loadMoreComments'])->name('post.comments');

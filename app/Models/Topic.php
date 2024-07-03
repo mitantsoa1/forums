@@ -15,6 +15,14 @@ class Topic extends Model
     /**
      * Get the comments for the blog topic.
      */
+
+    public function getRouteKeyName(): string
+    {
+        // Pour afficher dans l'url au lieu de 'id' lorqu'on affiche un post 
+        return 'slug';
+    }
+
+
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class)->latest();

@@ -26,6 +26,7 @@ class Post extends Model
         // Pour afficher dans l'url au lieu de 'id' lorqu'on affiche un post 
         return 'slug';
     }
+
     public function topic(): BelongsTo
     {
         return $this->belongsTo(Topic::class);

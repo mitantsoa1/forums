@@ -4,15 +4,15 @@
     class="flex flex-col lg:flex-row bg-white mt-0 pr-2 items-stretch @if ($list) border-b border-r @else border-b @endif">
     <div class="bg-white md:w-20">{{ $post->user->name }}</div>
     <div class="flex flex-col items-start my-3 space-y-2 lg:w-12/12 lg:mt-0 lg:ml-12">
-        <span
-            class="border text-indigo-600 font-semibold hover:bg-indigo-100 hover:cursor-pointer px-2 py-0.5 rounded-md  mt-2">{{ $post->topic->title }}</span>
+        <a href="{{ route('posts.showByTopic', ['topic' => $post->topic->title]) }}" class="mt-2"><span
+                class="border text-indigo-600 font-semibold hover:bg-indigo-100 px-2 py-0.5 rounded-md  ">{{ $post->topic->title }}</span></a>
         <a href="{{ route('posts.show', ['post' => $post]) }}">
-            <h5 class="font-bold text-slate-900 text-2xl leading-tight">
+            <h5 class="italic underline text-slate-900 text-lg leading-tight">
                 {{ $post->title }}
             </h5>
         </a>
 
-        <p class="text-md lg:text-md text-slate-600">
+        <p class="text-md lg:text-md text-slate-700">
             @if ($list)
                 <a href="{{ route('posts.show', ['post' => $post]) }}">
                     {{ $post->excerpt }}
