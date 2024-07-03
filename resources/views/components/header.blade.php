@@ -36,11 +36,18 @@
             @endauth
 
             <button @click="open = !open" @click.outside="open = false" @class([
-                'w-8 h-8 flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
+                'mt-1.5 w-8 h-8 flex rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2',
                 'md:hidden' => Auth::guest(),
             ])>
                 @auth
-                    <img class="h-8 w-8 rounded-full" src="{{ asset('images/profile.png') }}" alt="Image de profil">
+                    {{-- <img class="h-8 w-8 rounded-full" src="{{ asset('images/profile.png') }}" alt="Image de profil"> --}}
+                    <svg xmlns="http://www.w3.org/2000/svg" class=" p-1 rounded-full text-slate-50 bg-indigo-700"
+                        viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <circle cx="12" cy="7" r="4" />
+                        <path d="M5.5 21h13a2 2 0 0 0 2 -2c0 -4.418 -3.582 -8 -8 -8s-8 3.582 -8 8a2 2 0 0 0 2 2z" />
+                    </svg>
                 @else
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-8 h-8">
