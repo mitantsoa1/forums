@@ -84,7 +84,7 @@
             <ul class="hidden md:flex space-x-12 font-semibold">
                 <li><a href="{{ route('login') }}">Sign in</a></li>
                 <li>
-                    <a href="" class="flex items-center group text-indigo-700">
+                    <a href="{{ route('register') }}" class="flex items-center group text-indigo-700">
                         Sign up
                         <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                             stroke-width="1.5" stroke="currentColor"

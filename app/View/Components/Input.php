@@ -20,7 +20,7 @@ class Input extends Component
         public string $type = 'text',
         public string $help = '',
     ) {
-        $this->id ??= $this->name;
+        $this->id ??= $this->name; // si id == null => id = name <=> $this->id = $this->id ?? $this->name;
     }
 
     public function isImage(): bool
