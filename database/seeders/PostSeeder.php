@@ -25,7 +25,7 @@ class PostSeeder extends Seeder
             ->sequence(fn () => [
                 'user_id' => $users->random(),
             ])
-            ->hasComments(0, fn () => ['user_id' => $users->random()])
+            ->hasComments(5, fn () => ['user_id' => $users->random()])
             ->create();
     }
 }

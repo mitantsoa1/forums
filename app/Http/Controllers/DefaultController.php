@@ -9,15 +9,20 @@ use Illuminate\View\View;
 
 class DefaultController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::withCount('comments')->paginate(5);
+        $posts = Post::query();
+
+        if ($search = $request->search) {
+            $posts->where('title', 'LIKE', '%' . $search . '%')
+                ->orWhere('content', 'LIKE', '%' . $search . '%');
+        }
+        $posts = $posts->withCount('comments')->paginate(5);
         return view('index', [
             'posts' => $posts,
             'list' => true,
         ]);
     }
-
     // public function show(Post $post):View
     // {
     //     return view('post');
