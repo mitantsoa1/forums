@@ -41,9 +41,16 @@
                         @endif </span>
                     {{-- @foreach ($post->comments as $comment) --}}
                     @foreach ($comments as $comment)
-                        @php
-                            $commentUser = $comment->user->id == Auth::user()->id ? 1 : 0;
-                        @endphp
+                        @auth
+                            @php
+                                $commentUser = $comment->user->id == Auth::user()->id ? 1 : 0;
+                            @endphp
+                        @endauth
+                        @guest
+                            @php
+                                $commentUser = 0;
+                            @endphp
+                        @endguest
 
                         <div @class([
                             'mt-6' => !$commentUser,
@@ -114,35 +121,42 @@
 
 
             document.getElementById('show-more').addEventListener('click', function() {
-                let button = this;
-                let offset = button.getAttribute('data-offset');
-                let postId = {{ $post->id }};
+                    let button = this;
+                    let offset = button.getAttribute('data-offset');
+                    let postId = {{ $post->id }};
 
-                fetch(`/questions/${postId}/comment?offset=${offset}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.length > 0) {
+                    fetch(`/questions/${postId}/comment?offset=${offset}`)
+                        .then(response => response.json())
+                        .then(data => {
+                                if (data.length > 0) {
 
-                            let commentsContainer = document.getElementById('comments-load');
-                            data.forEach(comment => {
-                                let commentUser = (comment.user.id == {{ Auth::user()->id }}) ?
-                                    1 : 0;
-                                let totalJM = comment.reactions_count[0].total_jm <= 0 ? 0 :
-                                    comment.reactions_count[0].total_jm;
-                                let totalJMP = comment.reactions_count[0].total_jmp <= 0 ? 0 :
-                                    comment.reactions_count[0].total_jmp;
+                                    let commentsContainer = document.getElementById('comments-load');
+                                    data.forEach(comment => {
 
-                                /*******************  Create the response div  ******************/
-                                let responseDiv = document.createElement('div');
-                                responseDiv.classList.add('comment-response', 'flex', 'w-full',
-                                    'space-x-2',
-                                    'text-sm');
-                                if (commentUser) {
-                                    responseDiv.classList.add('justify-end');
-                                } else {
-                                    responseDiv.classList.add('items-center');
-                                }
-                                responseDiv.innerHTML = `
+                                            let commentUser = 0;
+                                            @auth
+                                            commentUser = (comment.user.id == {{ Auth::user()->id }}) ?
+                                                1 : 0;
+                                        @endauth
+
+
+                                        let totalJM = comment.reactions_count[0].total_jm <= 0 ? 0 :
+                                            comment.reactions_count[0].total_jm;
+                                        let totalJMP = comment.reactions_count[0].total_jmp <= 0 ? 0 :
+                                            comment.reactions_count[0].total_jmp;
+
+                                        /*******************  Create the response div  ******************/
+                                        let responseDiv = document.createElement('div'); responseDiv
+                                        .classList.add('comment-response', 'flex', 'w-full',
+                                            'space-x-2',
+                                            'text-sm');
+
+                                        if (commentUser) {
+                                            responseDiv.classList.add('justify-end');
+                                        } else {
+                                            responseDiv.classList.add('items-center');
+                                        }
+                                        responseDiv.innerHTML = `
                                         <span class="text-indigo-500 flex items-center space-x-1 px-2 cursor-pointer btn-jm" >${totalJMP}&nbsp;
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                                                 <path d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75A.75.75 0 0 1 15 2a2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777ZM2.331 10.727a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507C2.28 19.482 3.105 20 3.994 20H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227Z" />
@@ -155,58 +169,58 @@
                                         </span>
                                         <span class=" text-sm text-slate-500 cursor-pointer btn-response" > Répondre </span>
                                     `;
-                                /*******************  Create the comment div  ******************/
-                                let commentDiv = document.createElement('div');
-                                commentDiv.classList.add('mt-6');
+                                        /*******************  Create the comment div  ******************/
+                                        let commentDiv = document.createElement('div'); commentDiv.classList
+                                        .add('mt-6');
 
-                                let createdAt = new Date(comment.created_at);
-                                let formattedDate = createdAt.getFullYear() + '-' +
-                                    ('0' + (createdAt.getMonth() + 1)).slice(-2) + '-' +
-                                    ('0' + createdAt.getDate()).slice(-2) + ' ' +
-                                    ('0' + createdAt.getHours()).slice(-2) + ':' +
-                                    ('0' + createdAt.getMinutes()).slice(-2);
+                                        let createdAt = new Date(comment.created_at);
+                                        let formattedDate = createdAt.getFullYear() + '-' +
+                                            ('0' + (createdAt.getMonth() + 1)).slice(-2) + '-' +
+                                            ('0' + createdAt.getDate()).slice(-2) + ' ' +
+                                            ('0' + createdAt.getHours()).slice(-2) + ':' +
+                                            ('0' + createdAt.getMinutes()).slice(-2);
 
 
-                                commentDiv.innerHTML =
-                                    `<p class="text-sm italic underline"><strong>${comment.user.name}</strong> </p>
+                                        commentDiv.innerHTML =
+                                        `<p class="text-sm italic underline"><strong>${comment.user.name}</strong> </p>
                                     <p class="ml-3 leading-normal">${comment.content}</p>
                                     <time class="text-xs text-slate-500 italic"
                                         datetime="${comment.created_at}">${formattedDate}</time>`
 
-                                commentsContainer.appendChild(commentDiv);
-                                commentsContainer.appendChild(responseDiv);
-                            });
-                            if (data.length < offset) {
+                                        commentsContainer.appendChild(commentDiv); commentsContainer
+                                        .appendChild(responseDiv);
+                                    });
+                                if (data.length < offset) {
+                                    button.disabled = true;
+                                    button.innerText = 'No more';
+                                }
+                                button.setAttribute('data-offset', parseInt(offset) + data.length);
+                            } else {
                                 button.disabled = true;
                                 button.innerText = 'No more';
                             }
-                            button.setAttribute('data-offset', parseInt(offset) + data.length);
-                        } else {
-                            button.disabled = true;
-                            button.innerText = 'No more';
+                        });
+            });
+
+        /****** J'aime *******/
+
+        let buttons = document.getElementsByClassName('btn-jm');
+
+        Array.from(buttons).forEach(button => {
+            button.addEventListener('click', function() {
+                let button_react = this;
+                let postId = {{ $post->id }};
+
+                fetch(`/questions/${postId}/react?react=jm`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            // Handle the response data
                         }
                     });
+
             });
-
-            /****** J'aime *******/
-
-            let buttons = document.getElementsByClassName('btn-jm');
-
-            Array.from(buttons).forEach(button => {
-                button.addEventListener('click', function() {
-                    let button_react = this;
-                    let postId = {{ $post->id }};
-
-                    fetch(`/questions/${postId}/react?react=jm`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.length > 0) {
-                                // Handle the response data
-                            }
-                        });
-
-                });
-            });
+        });
 
 
         });
