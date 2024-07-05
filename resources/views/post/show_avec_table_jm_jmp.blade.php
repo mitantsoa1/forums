@@ -2,6 +2,7 @@
 <x-base title="{{ $post->topic->slug }} | {{ $post->slug }}">
     <div class="flex flex-wrap mt-0">
         <div class="w-full md:w-12/12">
+            @dd($comments)
             {{-- Début du post --}}
             <x-post :post="$post" />
             {{-- Fin du post --}}
@@ -51,7 +52,7 @@
                             @endphp
                         @endguest
 
-                        <div id="comment_{{ $comment->id }}" @class([
+                        <div @class([
                             'mt-6' => !$commentUser,
                             'mt-6 flex flex-col items-end' => $commentUser,
                         ])>
@@ -70,35 +71,47 @@
                                 'items-center' => !$commentUser,
                                 'justify-end' => $commentUser,
                             ])>
-                                <span id="span_jm_{{ $comment->id }}" data-commentId = "{{ $comment->id }}"
-                                    class="text-indigo-500 flex items-center space-x-1 px-2 cursor-pointer btn-jm">{{ $comment->jm ?? 0 }}&nbsp;<svg
+                                <span
+                                    class="text-indigo-500 flex items-center space-x-1 px-2 cursor-pointer btn-jm">{{ $comment->reactionsCount->first()->total_jm ?? 0 }}&nbsp;<svg
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                         class="size-6">
                                         <path
                                             d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75A.75.75 0 0 1 15 2a2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777ZM2.331 10.727a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507C2.28 19.482 3.105 20 3.994 20H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227Z" />
                                     </svg></span>
-                                <span id="span_jmp_{{ $comment->id }}" data-commentId = "{{ $comment->id }}"
-                                    class="flex text-red-500 items-center space-x-1 px-2 cursor-pointer btn-jmp">{{ $comment->jmp ?? 0 }}&nbsp;<svg
+                                <span
+                                    class="flex text-red-500 items-center space-x-1 px-2 cursor-pointer btn-jmp">{{ $comment->reactionsCount->first()->total_jmp ?? 0 }}&nbsp;<svg
                                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                         class="size-6">
                                         <path
                                             d="M15.73 5.5h1.035A7.465 7.465 0 0 1 18 9.625a7.465 7.465 0 0 1-1.235 4.125h-.148c-.806 0-1.534.446-2.031 1.08a9.04 9.04 0 0 1-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.499 4.499 0 0 0-.322 1.672v.633A.75.75 0 0 1 9 22a2.25 2.25 0 0 1-2.25-2.25c0-1.152.26-2.243.723-3.218.266-.558-.107-1.282-.725-1.282H3.622c-1.026 0-1.945-.694-2.054-1.715A12.137 12.137 0 0 1 1.5 12.25c0-2.848.992-5.464 2.649-7.521C4.537 4.247 5.136 4 5.754 4H9.77a4.5 4.5 0 0 1 1.423.23l3.114 1.04a4.5 4.5 0 0 0 1.423.23ZM21.669 14.023c.536-1.362.831-2.845.831-4.398 0-1.22-.182-2.398-.52-3.507-.26-.85-1.084-1.368-1.973-1.368H19.1c-.445 0-.72.498-.523.898.591 1.2.924 2.55.924 3.977a8.958 8.958 0 0 1-1.302 4.666c-.245.403.028.959.5.959h1.053c.832 0 1.612-.453 1.918-1.227Z" />
                                     </svg></span>
-                                <span data-commentId = "{{ $comment->id }}"
-                                    class=" text-sm text-slate-500 cursor-pointer btn-response"> Répondre </span>
+                                <span class=" text-sm text-slate-500 cursor-pointer btn-response"> Répondre </span>
 
                             </div>
                         </div>
+
+                        {{-- <div class="mt-6">
+                            <p class="text-sm italic underline"><strong>{{ $comment->user->name }}</strong> </p>
+                            <p class="ml-3 leading-normal">{{ $comment->content }}</p>
+                            <time class="text-xs text-slate-500 italic"
+                                datetime="{{ $comment->created_at }}">{{ $comment->created_at->format('Y-m-d H:i') }}</time>
+                        </div> --}}
+
+
+                        {{-- <div class="flex flex-col items-end">
+                            <p class="text-sm italic mr-4"><strong>{{ $comment->user->name }}</strong></p>
+                            <p class="">{{ $comment->content }}</p>
+                            <time class="text-xs text-slate-500 italic"
+                                datetime="{{ $comment->created_at }}">{{ $comment->created_at->format('Y-m-d H:i') }}</time>
+                        </div> --}}
                     @endforeach
                     <div id="comments-load"></div>
-                    {{-- Show more --}}
                     <div class="flex items-center justify-center mb-4">
                         <div class="border-t border-gray-300 flex-grow mr-2"></div>
                         <span id="show-more" data-offset="5" class="px-3 py-2  text-gray-500 hover:cursor-pointer">show
                             more</span>
                         <div class="border-t border-gray-300 flex-grow ml-2"></div>
                     </div>
-                    {{-- fin show more --}}
                 @endif
             </div>
         </div>
@@ -126,8 +139,13 @@
                                                 1 : 0;
                                         @endauth
 
-                                        /*******************  Create the response div  ******************/
 
+                                        let totalJM = comment.reactions_count[0].total_jm <= 0 ? 0 :
+                                            comment.reactions_count[0].total_jm;
+                                        let totalJMP = comment.reactions_count[0].total_jmp <= 0 ? 0 :
+                                            comment.reactions_count[0].total_jmp;
+
+                                        /*******************  Create the response div  ******************/
                                         let responseDiv = document.createElement('div'); responseDiv
                                         .classList.add('comment-response', 'flex', 'w-full',
                                             'space-x-2',
@@ -138,25 +156,22 @@
                                         } else {
                                             responseDiv.classList.add('items-center');
                                         }
-
-                                        let totalJM = comment.jm <= 0 ? 0 : comment.jm;
-                                        let totalJMP = comment.jmp <= 0 ? 0 : comment.jmp;
-
-                                        responseDiv.innerHTML =
-                                        `
-                                        <span id="span_jm_${comment.id}" data-commentId = "${comment.id}" class="text-indigo-500 flex items-center space-x-1 px-2 cursor-pointer btn-jm" >${totalJM}&nbsp;
+                                        responseDiv.innerHTML = `
+                                        <span class="text-indigo-500 flex items-center space-x-1 px-2 cursor-pointer btn-jm" >${totalJMP}&nbsp;
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                                                 <path d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75A.75.75 0 0 1 15 2a2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777ZM2.331 10.727a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507C2.28 19.482 3.105 20 3.994 20H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227Z" />
                                             </svg>
                                         </span>
-                                        <span id="span_jmp_${comment.id}" data-commentId = "${comment.id}" class="flex text-red-500 items-center space-x-1 px-2 cursor-pointer btn-jmp" >${totalJMP}&nbsp;
+                                        <span class="flex text-red-500 items-center space-x-1 px-2 cursor-pointer btn-jmp" >${totalJMP}&nbsp;
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
                                                 <path d="M15.73 5.5h1.035A7.465 7.465 0 0 1 18 9.625a7.465 7.465 0 0 1-1.235 4.125h-.148c-.806 0-1.534.446-2.031 1.08a9.04 9.04 0 0 1-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.499 4.499 0 0 0-.322 1.672v.633A.75.75 0 0 1 9 22a2.25 2.25 0 0 1-2.25-2.25c0-1.152.26-2.243.723-3.218.266-.558-.107-1.282-.725-1.282H3.622c-1.026 0-1.945-.694-2.054-1.715A12.137 12.137 0 0 1 1.5 12.25c0-2.848.992-5.464 2.649-7.521C4.537 4.247 5.136 4 5.754 4H9.77a4.5 4.5 0 0 1 1.423.23l3.114 1.04a4.5 4.5 0 0 0 1.423.23ZM21.669 14.023c.536-1.362.831-2.845.831-4.398 0-1.22-.182-2.398-.52-3.507-.26-.85-1.084-1.368-1.973-1.368H19.1c-.445 0-.72.498-.523.898.591 1.2.924 2.55.924 3.977a8.958 8.958 0 0 1-1.302 4.666c-.245.403.028.959.5.959h1.053c.832 0 1.612-.453 1.918-1.227Z" />
                                             </svg>
                                         </span>
-                                        <span data-commentId = "${comment.id}" class=" text-sm text-slate-500 cursor-pointer btn-response" > Répondre </span>`;
+                                        <span class=" text-sm text-slate-500 cursor-pointer btn-response" > Répondre </span>
+                                    `;
                                         /*******************  Create the comment div  ******************/
-
+                                        let commentDiv = document.createElement('div'); commentDiv.classList
+                                        .add('mt-6');
 
                                         let createdAt = new Date(comment.created_at);
                                         let formattedDate = createdAt.getFullYear() + '-' +
@@ -165,15 +180,11 @@
                                             ('0' + createdAt.getHours()).slice(-2) + ':' +
                                             ('0' + createdAt.getMinutes()).slice(-2);
 
-                                        let commentDiv = document.createElement('div'); commentDiv.id =
-                                        'comment_' + comment.id; commentDiv.classList
-                                        .add('mt-6');
 
-                                        /****/
                                         commentDiv.innerHTML =
                                         `<p class="text-sm italic underline"><strong>${comment.user.name}</strong> </p>
-                                        <p class="ml-3 leading-normal">${comment.content}</p>
-                                        <time class="text-xs text-slate-500 italic"
+                                    <p class="ml-3 leading-normal">${comment.content}</p>
+                                    <time class="text-xs text-slate-500 italic"
                                         datetime="${comment.created_at}">${formattedDate}</time>`
 
                                         commentsContainer.appendChild(commentDiv); commentsContainer
@@ -193,40 +204,18 @@
 
         /****** J'aime *******/
 
-        // let buttons = document.getElementsByClassName('btn-jm');
-        let buttons = document.querySelectorAll('.btn-jm, .btn-jmp');
+        let buttons = document.getElementsByClassName('btn-jm');
 
         Array.from(buttons).forEach(button => {
             button.addEventListener('click', function() {
-                let reactBtn = '';
-                if (this.classList.contains('btn-jm')) {
-                    reactBtn = 'jm';
-                } else if (this.classList.contains('btn-jmp')) {
-                    reactBtn = 'jmp';
-                }
                 let button_react = this;
                 let postId = {{ $post->id }};
-                let comment = button.getAttribute('data-commentId');
 
-                fetch(`/questions/${postId}/react?comment=${comment}&react=${reactBtn}`)
+                fetch(`/questions/${postId}/react?react=jm`)
                     .then(response => response.json())
                     .then(data => {
-                        let idComment = data.idComment;
-                        if (data.react == 'jm') {
-                            let idSpan = 'span_jm_' + idComment;
-                            let span = document.getElementById(idSpan);
-                            span.innerHTML = `${data.totalReact}&nbsp;
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                                <path d="M7.493 18.5c-.425 0-.82-.236-.975-.632A7.48 7.48 0 0 1 6 15.125c0-1.75.599-3.358 1.602-4.634.151-.192.373-.309.6-.397.473-.183.89-.514 1.212-.924a9.042 9.042 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75A.75.75 0 0 1 15 2a2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H14.23c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23h-.777ZM2.331 10.727a11.969 11.969 0 0 0-.831 4.398 12 12 0 0 0 .52 3.507C2.28 19.482 3.105 20 3.994 20H4.9c.445 0 .72-.498.523-.898a8.963 8.963 0 0 1-.924-3.977c0-1.708.476-3.305 1.302-4.666.245-.403-.028-.959-.5-.959H4.25c-.832 0-1.612.453-1.918 1.227Z" />
-                            </svg>`
-                        } else if (data.react == 'jmp') {
-
-                            let idSpan = 'span_jmp_' + idComment;
-                            let span = document.getElementById(idSpan);
-                            span.innerHTML = `${data.totalReact}&nbsp;
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                                <path d="M15.73 5.5h1.035A7.465 7.465 0 0 1 18 9.625a7.465 7.465 0 0 1-1.235 4.125h-.148c-.806 0-1.534.446-2.031 1.08a9.04 9.04 0 0 1-2.861 2.4c-.723.384-1.35.956-1.653 1.715a4.499 4.499 0 0 0-.322 1.672v.633A.75.75 0 0 1 9 22a2.25 2.25 0 0 1-2.25-2.25c0-1.152.26-2.243.723-3.218.266-.558-.107-1.282-.725-1.282H3.622c-1.026 0-1.945-.694-2.054-1.715A12.137 12.137 0 0 1 1.5 12.25c0-2.848.992-5.464 2.649-7.521C4.537 4.247 5.136 4 5.754 4H9.77a4.5 4.5 0 0 1 1.423.23l3.114 1.04a4.5 4.5 0 0 0 1.423.23ZM21.669 14.023c.536-1.362.831-2.845.831-4.398 0-1.22-.182-2.398-.52-3.507-.26-.85-1.084-1.368-1.973-1.368H19.1c-.445 0-.72.498-.523.898.591 1.2.924 2.55.924 3.977a8.958 8.958 0 0 1-1.302 4.666c-.245.403.028.959.5.959h1.053c.832 0 1.612-.453 1.918-1.227Z" />
-                            </svg>`
+                        if (data.length > 0) {
+                            // Handle the response data
                         }
                     });
 

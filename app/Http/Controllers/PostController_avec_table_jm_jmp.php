@@ -20,7 +20,7 @@ class PostController extends Controller
     {
 
         $post = Post::withCount('comments')->findOrFail($post->id);
-        $comments = $post->comments()->with('user')->take(5)->get();
+        $comments = $post->comments()->with('reaction_jmsCount')->with('reaction_jmpsCount')->with('user')->take(5)->get();
 
         return view('post.show', [
             'post' => $post,
@@ -33,7 +33,8 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
         $offset = $request->input('offset', 0);
-        $comments = $post->comments()->with('user')->skip($offset)->take(5)->get();
+        // $offset += 1;
+        $comments = $post->comments()->with('reaction_jmsCount')->with('reaction_jmpsCount')->with('user')->skip($offset)->take(5)->get();
 
         return response()->json($comments);
     }
@@ -54,6 +55,18 @@ class PostController extends Controller
             'comment' => ['required', 'string', 'between:4,255']
         ]);
 
+        /**
+         * Dans le Model/Comment, on ajoute la ligne 
+         * protected $fillable = ['content', 'post_id', 'user_id'] <=> protect $guarded = ['id','created_at','updated_at']
+         * puis on peut faire
+         * Comment::create([
+         *  'content' => $validated['comment'],
+         *  'post_id' => $post->id,
+         *  'user_id' => Auth::id(),
+         *]);
+         */
+
+
         $comment = new Comment();
         $comment->content = $content['comment'];
         $comment->post_id = $post->id;
@@ -66,19 +79,9 @@ class PostController extends Controller
 
     public function react(Request $request, $id)
     {
-        // $post = Post::findOrFail($id);
-        $comment = Comment::findOrFail($request->comment);
-
-        if ($comment) {
-            if ($request->react == 'jm') {
-                $comment->jm += 1;
-                $comment->save();
-                return response()->json(['react' => $request->react, 'idComment' => $request->comment, 'totalReact' => $comment->jm]);
-            } elseif ($request->react == 'jmp') {
-                $comment->jmp += 1;
-                $comment->save();
-                return response()->json(['react' => $request->react, 'idComment' => $request->comment, 'totalReact' => $comment->jmp]);
-            }
+        $post = Post::findOrFail($id);
+        if ($request->react == 'jm') {
+            return response()->json('ok');
         }
     }
 }
